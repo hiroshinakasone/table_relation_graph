@@ -44,10 +44,6 @@ def extract_referred_table_names(create_table_state):
     return map(lambda x: x.strip(), re.findall('.+ REFERENCES `(.+)` .+', create_table_state))
 
 
-def print_table(table, depth):
-    print("{}:{}{}".format(depth, "\t"*depth, table.name))
-
-
 def gen_all_tables(create_table_states):
     all_tables = {}
     for state in create_table_states:
