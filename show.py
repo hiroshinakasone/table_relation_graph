@@ -9,6 +9,7 @@ Image.MAX_IMAGE_PIXELS = 1000000000
 
 
 def add_path(DG, t):
+    DG.add_node(t.name)
     for p in t.parents():
         nx.add_path(DG, [t.name, p.name])
     for r in t.children():
@@ -22,12 +23,18 @@ def main():
 
     create_table_states = table.extract_create_table_state(sql)
     all_tables = table.gen_all_tables(create_table_states)
+
     DG = nx.DiGraph()
     for t in all_tables.values():
         t.traverse_children(lambda e, d: add_path(DG, e))
-
     # nx.nx_agraph.view_pygraphviz(DG, prog='fdp', args="-Goverlap=false")
-    nx.nx_agraph.view_pygraphviz(DG, prog='dot')
+    # nx.nx_agraph.view_pygraphviz(DG, prog='fdp', path='output/all.png')
+    nx.nx_agraph.to_agraph(DG).draw(prog='fdp', path='output/all.png')
+
+    for t in all_tables.values():
+        DG = nx.DiGraph()
+        add_path(DG, t)
+        nx.nx_agraph.to_agraph(DG).draw(prog='dot', path=f'output/{t.name}.png')
 
 
 if __name__ == '__main__':
